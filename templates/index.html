@@ -1,21 +1,30 @@
 <!DOCTYPE html>
-<html>
+<html lang="en">
 <head>
+    <meta charset="UTF-8">
     <title>Web Scraper</title>
+    <style>
+        /* HTMLコードを見やすくするためのスタイリング */
+        pre {
+            background-color: #f4f4f4;
+            padding: 10px;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+        }
+    </style>
 </head>
 <body>
+    <h1>Simple Web Scraper</h1>
 
-<h1>Simple Web Scraper</h1>
+    <form method="post">
+        <label for="url">URL:</label>
+        <input type="text" id="url" name="url">
+        <input type="submit" value="Scrape">
+    </form>
 
-<form action="/scrape" method="post">
-  <label for="url">Enter URL to scrape:</label><br>
-  <input type="text" id="url" name="url" value="https://www.example.com"><br>
-  <input type="submit" value="Scrape">
-</form>
-
-{% if title %}
-<h2>Scraped Title: {{ title }}</h2>
-{% endif %}
-
+    {% if pretty_html %}
+        <h2>Scraped HTML:</h2>
+        <pre>{{ pretty_html }}</pre>
+    {% endif %}
 </body>
 </html>

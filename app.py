@@ -1,24 +1,27 @@
-from flask import Flask, request, render_template, jsonify
+from flask import Flask, request, render_template
 import requests
 from bs4 import BeautifulSoup
 
 app = Flask(__name__)
 
-@app.route('/', methods=['GET'])
+@app.route('/', methods=['GET', 'POST'])
 def index():
-    return render_template('index.html')
+    if request.method == 'POST':
+        url = request.form['url']
 
-@app.route('/scrape', methods=['POST'])
-def scrape():
-    url = request.form.get('url', default='https://www.example.com', type=str)
+        try:
+            response = requests.get(url)
+            response.raise_for_status()
+        except requests.RequestException as e:
+            return f"Error: {e}"
 
-    response = requests.get(url)
-    if response.status_code != 200:
-        return jsonify({'error': 'Failed to retrieve the webpage.'}), 500
-    
-    soup = BeautifulSoup(response.text, 'html.parser')
-    title_tag = soup.title.string if soup.title else 'No title found'
-    return render_template('index.html', title=title_tag)
+        # BeautifulSoupで整形したHTMLを取得
+        soup = BeautifulSoup(response.text, 'html.parser')
+        pretty_html = soup.prettify()
+        
+        return render_template('index.html', pretty_html=pretty_html)
+        
+    return render_template('index.html', pretty_html=None)
 
 if __name__ == '__main__':
-    app.run(host='0.0.0.0', port=5000)
+    app.run(debug=True)
